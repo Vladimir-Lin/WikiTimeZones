@@ -15,8 +15,14 @@ public static function setHooks ( &$parser )
 public static function TzEditor( Parser $parser , $LANG = "zh-TW" )
 {
   ////////////////////////////////////////////////////////////////////////////
-  $args     = func_get_args ( ) ;
-  $outp     = Say ( $GLOBALS [ "TzHost" ] ) ;
+  $mypath   = dirname      ( __FILE__                                      ) ;
+  $mypath   = str_replace  ( "\\" , "/" , $mypath                          ) ;
+  $rootpt   = dirname      ( dirname ( $mypath )                           ) ;
+  $rootpt   = str_replace  ( "\\" , "/" , $rootpt                          ) ;
+  $croot    = str_replace  ( $rootpt , "" , $mypath                        ) ;
+  ////////////////////////////////////////////////////////////////////////////
+  $args     = func_get_args (                                              ) ;
+  $outp     = TzWiki::SayTz ( $GLOBALS [ "TzHost" ] , $croot , $args       ) ;
   ////////////////////////////////////////////////////////////////////////////
   $parser -> getOutput ( ) -> addModules ( [ 'ext.TimeZones' ] )             ;
   ////////////////////////////////////////////////////////////////////////////
