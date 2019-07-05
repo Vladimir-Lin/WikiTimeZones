@@ -1,34 +1,24 @@
 <?php
 
-require_once dirname(__FILE__) . "/Accounts.php" ;
+require_once dirname(__FILE__) . "/config.php"                               ;
+require_once dirname(__FILE__) . "/php/tz.php"                               ;
 
-class HtPassword
+class TimeZoneWiki
 {
 
 public static function setHooks ( &$parser )
 {
-//  $parser -> setHook ( 'HtPassword', 'HtPassword::Editor' ) ;
-  $parser -> setFunctionHook ( 'HtPassword' , [ self::class , 'Editor' ] ) ;
+  $parser -> setFunctionHook ( 'TimeZoneLists' , [ self::class , 'TzEditor' ] ) ;
   return true ;
 }
 
-public static function Editor( Parser $parser , $FILE = "" , $LANG = "zh-TW" , $WIDTH = "100%" , $canAppend = "Yes" , $canDelete = "Yes" )
+public static function TzEditor( Parser $parser , $LANG = "zh-TW" )
 {
   ////////////////////////////////////////////////////////////////////////////
-  $mypath   = dirname      ( __FILE__                                      ) ;
-  $mypath   = str_replace  ( "\\" , "/" , $mypath                          ) ;
+  $args     = func_get_args ( ) ;
+  $outp     = Say ( $GLOBALS [ "TzHost" ] ) ;
   ////////////////////////////////////////////////////////////////////////////
-  $rootpt   = dirname      ( dirname ( $mypath )                           ) ;
-  $rootpt   = str_replace  ( "\\" , "/" , $rootpt                          ) ;
-  ////////////////////////////////////////////////////////////////////////////
-  $ACCT     = new Accounts ( $mypath , $rootpt , $LANG , $FILE             ) ;
-  $ACCT    -> setAppend    ( $canAppend                                    ) ;
-  $ACCT    -> setDelete    ( $canDelete                                    ) ;
-  $ACCT    -> Width = $WIDTH                                                 ;
-  ////////////////////////////////////////////////////////////////////////////
-  $outp     = $ACCT -> Content           (                                 ) ;
-  ////////////////////////////////////////////////////////////////////////////
-  $parser -> getOutput ( ) -> addModules ( [ 'ext.HtPassword' ] )            ;
+  $parser -> getOutput ( ) -> addModules ( [ 'ext.TimeZones' ] )             ;
   ////////////////////////////////////////////////////////////////////////////
   return array ( $outp , 'noparse' => true , 'isHTML' => true )              ;
 }

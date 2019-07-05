@@ -1,2 +1,2 @@
 # HtPassword
-HtPassword - a MediaWiki:Extension for accessing Apache .htpasswd file
+HtPassword - a MediaWiki:Extension for providing some detail functions for Time Zones

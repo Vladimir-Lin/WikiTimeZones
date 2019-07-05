@@ -3,7 +3,7 @@
 $magicWords = [ ] ;
 
 $magicWords['en'] = [
- 'HtPassword' => [ 0, 'HtPassword' ] ,
+ 'TimeZoneLists' => [ 0, 'TimeZoneLists' ] ,
 ] ;
 
 ?>
