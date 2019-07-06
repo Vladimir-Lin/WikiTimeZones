@@ -94,8 +94,9 @@ public static function SayTz ( $TZH , $root , $args )
         $INP -> AddPair          ( "onchange" , $JSC                       ) ;
         $INP -> AddPair          ( "value"    , $LNAME                     ) ;
       } else                                                                 {
-        $HD  = $HR  -> addTd ( $LNAME                                      ) ;
+        $HD   = $HR  -> addTd    ( $LNAME                                  ) ;
       }                                                                      ;
+      $HD    -> NoWrap           (                                         ) ;
     }                                                                        ;
   }                                                                          ;
   ////////////////////////////////////////////////////////////////////////////

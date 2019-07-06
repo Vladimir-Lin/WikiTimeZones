@@ -17,5 +17,10 @@
   border-right-width: 0px;
   border-bottom-width: 2px;
   border-left-width: 0px;
-  font-size: 20px;
+  font-size: 16px;
+}
+
+#TimeZoneTable
+{
+  font-size: 16px;
 }

@@ -9,7 +9,7 @@ var updateTimeZoneName = function ( name , tzid , language )
   AssignAJAX (
     TzRootPath ( "ajax/ajaxName.php" ) ,
     {
-      Name: name ,
+      Name: PurgeInput ( name ) ,
       Uuid: tzid ,
       Locality: language ,
       Priority: 0 ,
