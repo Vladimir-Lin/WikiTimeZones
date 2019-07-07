@@ -49,9 +49,10 @@ public static function SayTz ( $TZH , $root , $args )
     return $DB -> ConnectionError ( )                                        ;
   }                                                                          ;
   ////////////////////////////////////////////////////////////////////////////
-  $TZS  = new TimeZones      (                                             ) ;
-  $TZS -> Query              ( $DB , $TzTable                              ) ;
-  $IDs  = $TZS -> IDs                                                        ;
+  $TZS    = new TimeZones    (                                             ) ;
+  $TZS   -> Query            ( $DB , $TzTable                              ) ;
+  $TZS   -> ZoneNames        ( $DB , $TzNames , $LL                        ) ;
+  $IDs    = $TZS -> IDs                                                      ;
   ////////////////////////////////////////////////////////////////////////////
   $MAPS = array              (                                             ) ;
   ////////////////////////////////////////////////////////////////////////////
@@ -70,9 +71,6 @@ public static function SayTz ( $TZH , $root , $args )
   $htm -> setType            ( 4                                           ) ;
   $htm -> setSplitter        ( "\n"                                        ) ;
   ////////////////////////////////////////////////////////////////////////////
-  $NI   = new Name           (                                             ) ;
-  $NI  -> set                ( "Priority"  , 0                             ) ;
-  $NI  -> setRelevance       ( "Default"                                   ) ;
   foreach                    ( $IDs as $id                                 ) {
     $TUID  = $TZS -> UuidById     ( $id )                                    ;
     $ZNAME = $TZS -> ZoneNameById ( $id )                                    ;
@@ -83,9 +81,10 @@ public static function SayTz ( $TZH , $root , $args )
     $HD   -> AddPair         ( "align" , "right"                           ) ;
     $HD    = $HR  -> addTd   ( $ZNAME                                      ) ;
     foreach                  ( $LL as $kk                                  ) {
-      $NI -> set             ( "Uuid"      , $TUID                         ) ;
-      $NI -> set             ( "Locality"  , $kk                           ) ;
-      $LNAME = $NI -> Fetch  ( $DB , $TzNames                              ) ;
+//      $NI -> set             ( "Uuid"      , $TUID                         ) ;
+//      $NI -> set             ( "Locality"  , $kk                           ) ;
+//      $LNAME = $NI -> Fetch  ( $DB , $TzNames                              ) ;
+      $LNAME = $TZS -> NAMEs [ $kk ] [ $TUID ]                               ;
       if ( $EDIT )                                                           {
         $JSC  = "updateTimeZoneName(this.value,'{$TUID}',$kk);"              ;
         $HD   = $HR  -> addTd    (                                         ) ;
@@ -112,6 +111,56 @@ public static function SayTz ( $TZH , $root , $args )
   ////////////////////////////////////////////////////////////////////////////
   $FILENAME = dirname(__FILE__) . "/../templates/FrameWork.html"             ;
   $HTML     = Strings::ReplaceFileByKeys ( $FILENAME , $MAPS )               ;
+  ////////////////////////////////////////////////////////////////////////////
+  $DB -> Close (     )                                                       ;
+  unset        ( $DB )                                                       ;
+  ////////////////////////////////////////////////////////////////////////////
+  return $HTML                                                               ;
+}
+
+public static function TzSelector ( $TZH , $root , $args )
+{
+  ////////////////////////////////////////////////////////////////////////////
+  $HTML     = ""                                                             ;
+  $LANG     = 1001                                                           ;
+  $EDIT     = false                                                          ;
+  $TABLES   = $GLOBALS [ "TzTables"  ]                                       ;
+  $TzTable  = $TABLES  [ "TimeZone"  ]                                       ;
+  $TzNames  = $TABLES  [ "TzNames"   ]                                       ;
+  $SID      = ""                                                             ;
+  $CID      = ""                                                             ;
+  $TZID     = ""                                                             ;
+  ////////////////////////////////////////////////////////////////////////////
+  if ( count ( $args ) > 1 ) $LANG = $args [ 1 ]                             ;
+  ////////////////////////////////////////////////////////////////////////////
+  $IXX      = 2                                                              ;
+  $LXX      = count ( $args )                                                ;
+  while ( $IXX < $LXX )                                                      {
+    $Opts   = new Strings ( $args [ $IXX ] )                                 ;
+    $Opts -> split ( "=" )                                                   ;
+    if   ( strtolower ( trim ( $Opts -> at ( 0 ) ) ) == "id"               ) {
+      $SID  = trim ( $Opts -> at ( 1 ) )                                     ;
+    } else
+    if   ( strtolower ( trim ( $Opts -> at ( 0 ) ) ) == "class"            ) {
+      $CID  = trim ( $Opts -> at ( 1 ) )                                     ;
+    } else
+    if   ( strtolower ( trim ( $Opts -> at ( 0 ) ) ) == "timezone"         ) {
+      $TZID = trim ( $Opts -> at ( 1 ) )                                     ;
+    }                                                                        ;
+    $IXX    = $IXX + 1                                                       ;
+  }                                                                          ;
+  ////////////////////////////////////////////////////////////////////////////
+  $DB        = new CiosDB           (                                      ) ;
+  if                                ( ! $DB -> Connect ( $TZH )            ) {
+    return $DB -> ConnectionError   (                                      ) ;
+  }                                                                          ;
+  ////////////////////////////////////////////////////////////////////////////
+  $TZS       = new TimeZones        (                                      ) ;
+  $TZS      -> Query                ( $DB , $TzTable                       ) ;
+  $TZS      -> ZoneNames            ( $DB , $TzNames , [ $LANG ]           ) ;
+  ////////////////////////////////////////////////////////////////////////////
+  $SELECTOR  = $TZS -> addSelection ( $TZID , $SID , $CID , $LANG          ) ;
+  $HTML      = $SELECTOR -> Content (                                      ) ;
   ////////////////////////////////////////////////////////////////////////////
   $DB -> Close (     )                                                       ;
   unset        ( $DB )                                                       ;
