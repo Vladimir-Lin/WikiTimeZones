@@ -130,6 +130,8 @@ public static function TzSelector ( $TZH , $root , $args )
   $SID      = ""                                                             ;
   $CID      = ""                                                             ;
   $TZID     = ""                                                             ;
+  $JSC      = ""                                                             ;
+  $TRIGGER  = "onchange"                                                     ;
   ////////////////////////////////////////////////////////////////////////////
   if ( count ( $args ) > 1 ) $LANG = $args [ 1 ]                             ;
   ////////////////////////////////////////////////////////////////////////////
@@ -146,6 +148,12 @@ public static function TzSelector ( $TZH , $root , $args )
     } else
     if   ( strtolower ( trim ( $Opts -> at ( 0 ) ) ) == "timezone"         ) {
       $TZID = trim ( $Opts -> at ( 1 ) )                                     ;
+    } else
+    if   ( strtolower ( trim ( $Opts -> at ( 0 ) ) ) == "js"               ) {
+      $JSC  = trim ( $Opts -> at ( 1 ) )                                     ;
+    } else
+    if   ( strtolower ( trim ( $Opts -> at ( 0 ) ) ) == "trigger"          ) {
+      $TRIGGER = trim ( $Opts -> at ( 1 ) )                                  ;
     }                                                                        ;
     $IXX    = $IXX + 1                                                       ;
   }                                                                          ;
@@ -160,6 +168,9 @@ public static function TzSelector ( $TZH , $root , $args )
   $TZS      -> ZoneNames            ( $DB , $TzNames , [ $LANG ]           ) ;
   ////////////////////////////////////////////////////////////////////////////
   $SELECTOR  = $TZS -> addSelection ( $TZID , $SID , $CID , $LANG          ) ;
+  if                                ( strlen ( $JSC ) > 0                  ) {
+    $SELECTOR -> AddPair            ( $TRIGGER , $JSC                      ) ;
+  }                                                                          ;
   $HTML      = $SELECTOR -> Content (                                      ) ;
   ////////////////////////////////////////////////////////////////////////////
   $DB -> Close (     )                                                       ;
